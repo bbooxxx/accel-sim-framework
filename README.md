@@ -1,4 +1,4 @@
-# Welcome to the top-level repo of Accel-Sim and AccelWattch
+# Accel-Sim-J: Repurposing Accel-Sim for NVIDIA Jetson GPUs
 
 The [ISCA 2020 paper](https://conferences.computer.org/isca/pdfs/ISCA2020-4QlDegUf3fKiwUXfV0KdCm/466100a473/466100a473.pdf)
 describes the goals of Accel-Sim and introduces the tool. This readme is meant to provide tutorial-like details on how to use the Accel-Sim
