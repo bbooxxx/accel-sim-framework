@@ -37,6 +37,48 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
   init();
 }
 
+std::map<uint64_t, uint64_t> create_address_cycle_map(const std::string &file_path) {
+    std::ifstream log_file(file_path);
+    std::map<uint64_t, uint64_t> result_map;
+    const uint64_t base_addr =  0x20cec1800;
+    bool first_line = true;
+    uint64_t first_src_addr = 0;
+    uint64_t first_cycle = 0;  // 新增变量存储第一个cycle值
+    std::string line;
+    
+    while (std::getline(log_file, line)) {
+        // Skip first line
+        if (first_line) {
+            first_line = false;
+            continue;
+        }
+        // Parse write request lines
+        size_t addr_pos = line.find("0x");
+        if (addr_pos == std::string::npos) continue;
+        size_t comma_pos = line.find(',', addr_pos);
+        if (comma_pos == std::string::npos) continue;
+        
+        // Extract address and cycle count
+        uint64_t src_addr = std::stoull(line.substr(addr_pos, comma_pos - addr_pos), nullptr, 16);
+        uint64_t cycle = std::stoull(line.substr(comma_pos + 1));
+        
+        // 如果是第一个有效数据
+        if (first_src_addr == 0) {
+            first_src_addr = src_addr;
+            first_cycle = cycle;  // 记录第一个cycle值
+            cycle = 0;           // 第一个cycle设为0
+        } else {
+            cycle -= first_cycle; // 后续数据相对于第一个的偏移
+        }
+        
+        // Calculate mapped address and add to map
+        uint64_t mapped_addr = base_addr + (src_addr - first_src_addr);
+        result_map[mapped_addr] = cycle;
+    }
+    return result_map;
+}
+  
+
 void accel_sim_framework::simulation_loop() {
   // for each kernel
   // load file
@@ -65,6 +107,16 @@ void accel_sim_framework::simulation_loop() {
       }
     }
 
+      // 主处理函数
+
+  std::map<uint64_t, uint64_t> DLA_input = create_address_cycle_map(
+    "/home/huangtianhao/accel-sim-framework/MobileNetV3_int8/Layer14/traces/MobileNetv3_14_int8_cvsram_all.log");
+    std::map<uint64_t, int> DLA_input_complete;
+    for (const auto& entry : DLA_input) {
+        DLA_input_complete[entry.first] = 0; // key是地址，value是处理状态
+    }
+    m_gpgpu_sim->set_DLA_input(DLA_input, DLA_input_complete);
+    
     unsigned finished_kernel_uid = simulate();
     // cleanup finished kernel
     if ((finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||

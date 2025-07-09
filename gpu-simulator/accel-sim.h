@@ -6,6 +6,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <cstdint>
+
+
 
 #include "../ISA_Def/trace_opcode.h"
 #include "../trace-parser/trace_parser.h"
