@@ -44,7 +44,7 @@ void accel_sim_framework::simulation_loop() {
   // launch
   // while loop till the end of the end kernel execution
   // prints stats
-
+  int cycle_time = 0;
   while (commandlist_index < commandlist.size() || !kernels_info.empty()) {
     parse_commandlist();
 
@@ -70,6 +70,13 @@ void accel_sim_framework::simulation_loop() {
     if ((finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||
         !m_gpgpu_sim->active()) && !kernels_info.empty()) {
       cleanup(finished_kernel_uid);
+    }
+    cycle_time ++ ;
+    if(cycle_time == 1) 
+    {
+      printf("before_l2flush_gpu_sim_cycle = %lld\n", m_gpgpu_sim->gpu_sim_cycle);
+      m_gpgpu_sim->l2_flush_cycle();
+      printf("after_l2flush_gpu_sim_cycle = %lld\n", m_gpgpu_sim->gpu_sim_cycle);
     }
 
     if (sim_cycles) {
@@ -186,7 +193,7 @@ unsigned accel_sim_framework::simulate() {
     finished_kernel_uid = m_gpgpu_sim->finished_kernel();
   } while (active && !finished_kernel_uid);
   
-  m_gpgpu_sim->l2_flush_cycle();
+  
   
   return finished_kernel_uid;
 }
