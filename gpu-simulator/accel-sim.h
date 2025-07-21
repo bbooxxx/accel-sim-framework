@@ -60,6 +60,7 @@ class accel_sim_framework {
 
 
  private:
+  std::string dla_memtrace_path;
   gpgpu_context *m_gpgpu_context;
   trace_config tconfig;
   trace_parser tracer;

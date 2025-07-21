@@ -37,10 +37,9 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
   init();
 }
 
-std::map<uint64_t, uint64_t> create_address_cycle_map(const std::string &file_path) {
+std::map<uint64_t, uint64_t> create_address_cycle_map(const std::string &file_path,unsigned long long base_addr) {
     std::ifstream log_file(file_path);
     std::map<uint64_t, uint64_t> result_map;
-    const uint64_t base_addr =  0x20cec1800;
     bool first_line = true;
     uint64_t first_src_addr = 0;
     uint64_t first_cycle = 0;  // 新增变量存储第一个cycle值
@@ -110,7 +109,7 @@ void accel_sim_framework::simulation_loop() {
       // 主处理函数
 
   std::map<uint64_t, uint64_t> DLA_input = create_address_cycle_map(
-    "/home/huangtianhao/accel-sim-framework/MobileNetV3_int8/Layer14/traces/MobileNetv3_14_int8_cvsram_all.log");
+    "/home/huangtianhao/accel-sim-framework/HPCA_Evaluations/MobileNetV3_int8_336/Layer1/traces/336x336_MobileNetv3_1_int8_cvsram_all.log",m_gpgpu_sim->get_config().get_memory_config().gpgpu_overlap_addr_start[0]);
     std::map<uint64_t, int> DLA_input_complete;
     for (const auto& entry : DLA_input) {
         DLA_input_complete[entry.first] = 0; // key是地址，value是处理状态
