@@ -78,6 +78,11 @@ void accel_sim_framework::simulation_loop() {
       m_gpgpu_sim->l2_flush_cycle();
       printf("after_l2flush_gpu_sim_cycle = %lld\n", m_gpgpu_sim->gpu_sim_cycle);
     }
+    if(cycle_time == 1) 
+    {
+      m_gpgpu_sim->readback_cycle();
+      printf("after_readback_sim_cycle = %lld\n", m_gpgpu_sim->gpu_sim_cycle);
+    }
 
     if (sim_cycles) {
       m_gpgpu_sim->update_stats();

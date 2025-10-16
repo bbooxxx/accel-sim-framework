@@ -64,6 +64,18 @@ const trace_warp_inst_t *trace_shd_warp_t::get_next_trace_inst() {
     new_inst->parse_from_trace_struct(
         warp_traces[trace_pc], m_kernel_info->OpcodeMap,
         m_kernel_info->m_tconfig, m_kernel_info->m_kernel_trace_info);
+    // std::cout << "trace_pc=" << trace_pc 
+    // << std::hex << " warp_traces[trace_pc].m_pc=" << warp_traces[trace_pc].m_pc 
+    // << " warp_traces[trace_pc].opcode=" << warp_traces[trace_pc].opcode 
+    // << " warp_traces[trace_pc].reg_dest[0]=" << warp_traces[trace_pc].reg_dest[0] 
+    // << " -> ";
+
+    // if (warp_traces[trace_pc].memadd_info != NULL) {
+    //   for (int i = 0; i < warp_traces[trace_pc].memadd_info->width; i++) {
+    //       std::cout << std::hex << warp_traces[trace_pc].memadd_info->addrs[i] << " ";
+    //   }
+    // }
+    // std::cout << "\n";
     trace_pc++;
     return new_inst;
   } else
