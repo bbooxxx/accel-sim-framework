@@ -73,3 +73,8 @@ source ./gpu-simulator/setup_environment.sh release
 - 该算子近似 FFN GEMM，不代表 softmax、KV-cache 等完整 Attention 行为。
 - 标定来源：SCOPE `3fa4fdb`、Orin Accel-Sim `a10fbea`、底层 GPGPU-Sim
   `09c0fea`。
+
+## 后续探索
+
+第一版结果保持不变。后续 4-bank 配置和 4 算子比较见
+[《Accel-SCOPE 四算子缓存探索》](operator-suite.md)。
